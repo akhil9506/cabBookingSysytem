@@ -86,6 +86,10 @@ public class UserController {
     public User saveUser(@RequestBody User user){
          return userService.saveUser(user);
     }
+    @GetMapping("/name")
+    public String  fetchUserByUsername(){
+        return userService.getPassword("foo1");
+    }
 
     @PostMapping("/rides")
     public Ride saveRide(@Valid @RequestBody  Ride ride){

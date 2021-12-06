@@ -25,6 +25,11 @@ public class UserServiceImpl implements UserService{
         return userRepository.findAll();
     }
 
+    @Override
+    public String getPassword(String username) {
+        return userRepository.findByUsername(username).getPassword();
+    }
+
     public User fetchUserById(Long userId) throws UserNotFoundException {
         Optional<User>user=userRepository.findById(userId);
         if(!user.isPresent()){
