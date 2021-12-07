@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 public class UserController {
@@ -86,9 +87,12 @@ public class UserController {
     public User saveUser(@RequestBody User user){
          return userService.saveUser(user);
     }
-    @GetMapping("/name")
-    public String  fetchUserByUsername(){
-        return userService.getPassword("foo1");
+    @PostMapping("/name")
+    public String  fetchUserByUsername(@RequestBody Map<String, Object> payload){
+        String jwtToken= (String) payload.get("jwt");
+        String username=jwtTokenUtil.extractUsername(jwtToken);
+        LOGGER.info((String)payload.get("jwt"));
+        return username;
     }
 
     @PostMapping("/rides")

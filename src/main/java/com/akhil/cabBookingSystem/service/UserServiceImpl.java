@@ -1,5 +1,6 @@
 package com.akhil.cabBookingSystem.service;
 
+import com.akhil.cabBookingSystem.entity.Customer;
 import com.akhil.cabBookingSystem.entity.User;
 import com.akhil.cabBookingSystem.exception.UserNotFoundException;
 import com.akhil.cabBookingSystem.repository.UserRepository;
@@ -37,4 +38,9 @@ public class UserServiceImpl implements UserService{
         }
         return user.get();
     }
+    public User fetchByUsername(String username){
+        return userRepository.findByUsername(username);
+    }
+
+
 }
