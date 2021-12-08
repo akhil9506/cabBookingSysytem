@@ -61,4 +61,9 @@ public class DriverServiceImpl implements DriverService {
         ride.setDriverId(null);
         rideService.saveRide(ride);
     }
+
+    @Override
+    public Driver saveDriver(Driver driver) {
+        return driverRepository.save(driver);
+    }
 }

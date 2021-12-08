@@ -1,5 +1,6 @@
 package com.akhil.cabBookingSystem.controller;
 
+import com.akhil.cabBookingSystem.entity.Driver;
 import com.akhil.cabBookingSystem.entity.Ride;
 import com.akhil.cabBookingSystem.entity.User;
 import com.akhil.cabBookingSystem.exception.RoleMisMatchException;
@@ -31,7 +32,7 @@ public class DriverController {
     @Autowired
     private UserService userService;
 
-    @PostMapping("/getRides")
+    @PostMapping("/driver/getRides")
     public Ride getRide(@RequestBody Map<String,Object> payload) throws Exception {
         String username = jwtTokenUtil.extractUsername((String) payload.get("jwt"));
         User user =  userService.fetchByUsername(username);
@@ -39,10 +40,11 @@ public class DriverController {
             throw new RoleMisMatchException("Not Valid Operation");
         }
         long  driverId = user.getRoleId();
+        logger.info("Getting Best ride for Driver");
         return driverService.getRide(driverId);
     }
 
-    @PostMapping("/confirmRide")
+    @PostMapping("/driver/confirmRide")
     public Ride confirmRide(@RequestBody Map<String,Object> payload) throws Exception {
         String username = jwtTokenUtil.extractUsername((String) payload.get("jwt"));
         User user =  userService.fetchByUsername(username);
@@ -51,11 +53,11 @@ public class DriverController {
         }
         long  driverId = user.getRoleId();
         Long rideID= new Long((String) payload.get("rideId"));
-//        long rideID= (long) payload.get("rideId");
+        logger.info("Confirming Ride");
         return driverService.confirmRide(driverId,rideID);
     }
 
-    @PostMapping("/cancelbestRide")
+    @PostMapping("/driver/cancelbestRide")
     public void cancelRide(@RequestBody Map<String,Object> payload) throws Exception {
         String username = jwtTokenUtil.extractUsername((String) payload.get("jwt"));
         User user =  userService.fetchByUsername(username);
@@ -65,5 +67,24 @@ public class DriverController {
         long  driverId = user.getRoleId();
         Long rideID= new Long((String) payload.get("rideId"));
         driverService.cancelRide(driverId,rideID);
+        logger.info("Cancelling Ride");
+    }
+    @PostMapping("/driver/signIn")
+    public User signIn(@RequestBody Map<String,Object> payload){
+        Driver driver = new Driver();
+        driver.setPhoneNUmber((String) payload.get("phoneNumber"));
+        driver.setRating((Double) payload.get("rating"));
+        long latitude =new Long((String)payload.get("latitude"));
+        driver.setLatitude(latitude);
+        long longitude =new Long((String) payload.get("longitude"));
+        driver.setLongitude(longitude);
+        long customerId = driverService.saveDriver(driver).getId();
+        User user = new User();
+        user.setUsername((String) payload.get("username"));
+        user.setPassword((String) payload.get("password"));
+        user.setRole("user");
+        user.setRoleId(customerId);
+        logger.info("new User signIn");
+        return  userService.saveUser(user);
     }
 }

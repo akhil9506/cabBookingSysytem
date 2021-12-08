@@ -23,4 +23,5 @@ public class Customer {
     private long latitude;
     private long  longitude;
     private long rideId;
+
 }

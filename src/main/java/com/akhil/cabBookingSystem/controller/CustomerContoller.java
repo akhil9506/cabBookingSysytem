@@ -29,7 +29,7 @@ public class CustomerContoller {
     @Autowired
     private CustomerService customerService;
 
-    @PostMapping("/updateLocation")
+    @PostMapping("/user/updateLocation")
     public Customer updateCustomerLocation(@RequestBody Map<String,Object> payload) throws Exception{
         String username = jwtTokenUtil.extractUsername((String) payload.get("jwt"));
         System.out.println("dad");
@@ -39,11 +39,11 @@ public class CustomerContoller {
             throw new ReflectiveOperationException("Not Valid Operation");
         }
         long  customerId = user.getRoleId();
-        logger.info(String.valueOf(customerId));
+        logger.info("Updating User Location");
         return customerService.updateCustomerLocation(customerId,(int)payload.get("lat"),(int)payload.get("long") );
     }
 
-    @PostMapping("/calculateFare")
+    @PostMapping("/user/calculateFare")
     public double calculateFare(@RequestBody Map<String,Object> payload) throws Exception {
         String username = jwtTokenUtil.extractUsername((String) payload.get("jwt"));
         User user =  userService.fetchByUsername(username);
@@ -51,11 +51,12 @@ public class CustomerContoller {
             throw new RoleMisMatchException("Not Valid Operation");
         }
         long  customerId = user.getRoleId();
+        logger.info("calculating Fare");
         return customerService.calculateFare(customerId,(int)payload.get("destinationLat"),(int)payload.get("destinationLong"));
 
     }
 
-    @PostMapping("/bookRide")
+    @PostMapping("/user/bookRide")
     public long bookRide(@RequestBody Map<String,Object> payload)throws Exception{
         String username = jwtTokenUtil.extractUsername((String) payload.get("jwt"));
         User user =  userService.fetchByUsername(username);
@@ -63,10 +64,11 @@ public class CustomerContoller {
             throw new RoleMisMatchException("Not Valid Operation");
         }
         long  customerId = user.getRoleId();
+        logger.info("new Ride Booking");
         return customerService.bookRide(customerId,(int)payload.get("destinationLat"),(int)payload.get("destinationLong"));
     }
 
-    @PostMapping("/updateDestination")
+    @PostMapping("/user/updateDestination")
     public long updateDestinationRide(@RequestBody Map<String,Object> payload)throws Exception{
         String username = jwtTokenUtil.extractUsername((String) payload.get("jwt"));
         User user =  userService.fetchByUsername(username);
@@ -74,10 +76,11 @@ public class CustomerContoller {
             throw new RoleMisMatchException("Not Valid Operation");
         }
         long  customerId = user.getRoleId();
+        logger.info("Updating destination location");
         return customerService.updateDestinationRide(customerId,(int)payload.get("destinationLat"),(int)payload.get("destinationLong"));
     }
 
-    @PostMapping("/cancelRide")
+    @PostMapping("/user/cancelRide")
     public void cancelRide(@RequestBody Map<String,Object> payload)throws Exception{
         String username = jwtTokenUtil.extractUsername((String) payload.get("jwt"));
         User user =  userService.fetchByUsername(username);
@@ -85,11 +88,11 @@ public class CustomerContoller {
             throw new RoleMisMatchException("Not Valid Operation");
         }
         long  customerId = user.getRoleId();
-        System.out.println("sdada");
+        logger.info("Cancelling Ride");
         customerService.cancelRide(customerId);
     }
 
-    @PostMapping("/getRideDetails")
+    @PostMapping("/user/getRideDetails")
     public Map<String,Object> getRideDetails(@RequestBody Map<String,Object> payload) throws Exception {
         String username = jwtTokenUtil.extractUsername((String) payload.get("jwt"));
         User user =  userService.fetchByUsername(username);
@@ -97,7 +100,28 @@ public class CustomerContoller {
             throw new RoleMisMatchException("Not Valid Operation");
         }
         long  customerId = user.getRoleId();
+        logger.info("Getting Ride details");
         return customerService.getRideDetails(customerId);
+    }
+
+    @PostMapping("/user/customerSignIn")
+    public User customerSignIn(@RequestBody Map<String,Object> payload) throws Exception {
+        Customer customer = new Customer();
+        customer.setPhoneNumber((String) payload.get("phoneNumber"));
+        customer.setLastName((String) payload.get("firstName"));
+        customer.setFirstName((String) payload.get("lastName"));
+        long latitude =new Long((String)payload.get("latitude"));
+        customer.setLatitude(latitude);
+        long longitude =new Long((String) payload.get("longitude"));
+        customer.setLongitude(longitude);
+        long customerId = customerService.saveCustomer(customer).getId();
+        User user = new User();
+        user.setUsername((String) payload.get("username"));
+        user.setPassword((String) payload.get("password"));
+        user.setRole("user");
+        user.setRoleId(customerId);
+        logger.info("new Customer Signin");
+        return  userService.saveUser(user);
     }
 
 }

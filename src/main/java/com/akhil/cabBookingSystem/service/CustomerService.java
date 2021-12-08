@@ -21,4 +21,5 @@ public interface CustomerService {
     void cancelRide(long customerId) throws UserNotFoundException;
 
     Map<String, Object> getRideDetails(long customerId) throws RideNotFoundException, Exception;
+    Customer saveCustomer(Customer customer);
 }

@@ -69,35 +69,36 @@ public class UserController {
         return ResponseEntity.ok(new AuthenticationResponse(jwt));
     }
 
-    @GetMapping({"/users"})
-    public List<User> home(){
-         return userService.fetchUserList();
-    }
-    @GetMapping("/riders")
-    public List<Ride> ride(){
-        return rideService.fetchRideList();
-    }
 
-    @GetMapping("/driver")
-    public String admin(){
-        return "This is Admin Page";
-    }
-
-    @PostMapping("/users")
-    public User saveUser(@RequestBody User user){
-         return userService.saveUser(user);
-    }
-    @PostMapping("/name")
-    public String  fetchUserByUsername(@RequestBody Map<String, Object> payload){
-        String jwtToken= (String) payload.get("jwt");
-        String username=jwtTokenUtil.extractUsername(jwtToken);
-        LOGGER.info((String)payload.get("jwt"));
-        return username;
-    }
-
-    @PostMapping("/rides")
-    public Ride saveRide(@Valid @RequestBody  Ride ride){
-        LOGGER .info("Creating new ride");
-        return rideService.saveRide(ride);
-    }
+//    @GetMapping({"/users"})
+//    public List<User> home(){
+//         return userService.fetchUserList();
+//    }
+//    @GetMapping("/riders")
+//    public List<Ride> ride(){
+//        return rideService.fetchRideList();
+//    }
+//
+//    @GetMapping("/driver")
+//    public String admin(){
+//        return "This is Admin Page";
+//    }
+//
+//    @PostMapping("/users")
+//    public User saveUser(@RequestBody User user){
+//         return userService.saveUser(user);
+//    }
+//    @PostMapping("/name")
+//    public String  fetchUserByUsername(@RequestBody Map<String, Object> payload){
+//        String jwtToken= (String) payload.get("jwt");
+//        String username=jwtTokenUtil.extractUsername(jwtToken);
+//        LOGGER.info((String)payload.get("jwt"));
+//        return username;
+//    }
+//
+//    @PostMapping("/rides")
+//    public Ride saveRide(@Valid @RequestBody  Ride ride){
+//        LOGGER .info("Creating new ride");
+//        return rideService.saveRide(ride);
+//    }
 }

@@ -122,4 +122,7 @@ public class CustomerServiceImpl implements CustomerService{
         details.put("Destination location longitude",ride.getLongitude());
         return details;
     }
+    public Customer saveCustomer(Customer customer){
+        return customerRepository.save(customer);
+    }
 }
