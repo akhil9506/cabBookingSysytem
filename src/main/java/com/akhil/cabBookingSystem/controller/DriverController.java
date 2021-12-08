@@ -69,7 +69,7 @@ public class DriverController {
         driverService.cancelRide(driverId,rideID);
         logger.info("Cancelling Ride");
     }
-    @PostMapping("/driver/signIn")
+    @PostMapping("/driver/signUp")
     public User signIn(@RequestBody Map<String,Object> payload){
         Driver driver = new Driver();
         driver.setPhoneNUmber((String) payload.get("phoneNumber"));

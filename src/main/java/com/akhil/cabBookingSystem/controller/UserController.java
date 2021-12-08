@@ -48,8 +48,28 @@ public class UserController {
         return "Hello";
     }
 
-    @RequestMapping(value = "/authenticate", method = RequestMethod.POST)
+    @RequestMapping(value = "/user/authenticate", method = RequestMethod.POST)
     public ResponseEntity<?> createAuthenticationToken (@RequestBody AuthenticationRequest authenticationRequest) throws Exception {
+
+        try {
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(authenticationRequest.getUsername(), authenticationRequest.getPassword())
+            );
+        }
+        catch (BadCredentialsException e) {
+            throw new Exception("Incorrect username or password", e);
+        }
+
+
+        final UserDetails userDetails = userDetailsService
+                .loadUserByUsername(authenticationRequest.getUsername());
+
+        final String jwt = jwtTokenUtil.generateToken(userDetails);
+
+        return ResponseEntity.ok(new AuthenticationResponse(jwt));
+    }
+    @RequestMapping(value = "/driver/authenticate", method = RequestMethod.POST)
+    public ResponseEntity<?> createAuthenticationTokendriver (@RequestBody AuthenticationRequest authenticationRequest) throws Exception {
 
         try {
             authenticationManager.authenticate(

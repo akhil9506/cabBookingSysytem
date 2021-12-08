@@ -104,7 +104,7 @@ public class CustomerContoller {
         return customerService.getRideDetails(customerId);
     }
 
-    @PostMapping("/user/customerSignIn")
+    @PostMapping("/user/customerSignUp")
     public User customerSignIn(@RequestBody Map<String,Object> payload) throws Exception {
         Customer customer = new Customer();
         customer.setPhoneNumber((String) payload.get("phoneNumber"));
