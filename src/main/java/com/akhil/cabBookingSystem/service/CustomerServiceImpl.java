@@ -1,23 +1,31 @@
 package com.akhil.cabBookingSystem.service;
 
 import com.akhil.cabBookingSystem.entity.Customer;
+import com.akhil.cabBookingSystem.entity.Driver;
 import com.akhil.cabBookingSystem.entity.Ride;
-import com.akhil.cabBookingSystem.entity.User;
+
+import com.akhil.cabBookingSystem.exception.RideNotFoundException;
 import com.akhil.cabBookingSystem.exception.UserNotFoundException;
 import com.akhil.cabBookingSystem.repository.CustomerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 
 @Service
 public class CustomerServiceImpl implements CustomerService{
 
-    private int BASEFARE =5;
+    private final int BASEFARE =5;
 
-    private double CGST=2.5;
-    private double SGST =2.5;
+    private final  double CGST=2.5;
+    private final  double SGST =2.5;
+
+    @Autowired
+    private DriverService driverService;
+
     @Autowired
     private CustomerRepository customerRepository;
 
@@ -92,5 +100,26 @@ public class CustomerServiceImpl implements CustomerService{
         }
         long rideId=user.get().getRideId();
         rideService.deleteRideById(rideId);
+    }
+
+    @Override
+    public Map<String, Object> getRideDetails(long customerId) throws Exception {
+        Optional<Customer> user=customerRepository.findById(customerId);
+        if(!user.isPresent()){
+            throw new UserNotFoundException("User Not Available");
+        }
+        long rideId=user.get().getRideId();
+        Ride ride =rideService.fetchRideById(rideId);
+        if(ride.getDriverId()==null){
+            throw new UserNotFoundException();
+        }
+        Driver driver = driverService.fetchDriverById(ride.getDriverId());
+        HashMap<String, Object>details = new HashMap<String, Object>();
+        details.put("driverName",driver.getDriverName());
+        details.put("driverRating",driver.getRating());
+        details.put("driver Mobile NUmber",driver.getPhoneNUmber());
+        details.put("Detination location latitude",ride.getLatitude());
+        details.put("Destination location longitude",ride.getLongitude());
+        return details;
     }
 }

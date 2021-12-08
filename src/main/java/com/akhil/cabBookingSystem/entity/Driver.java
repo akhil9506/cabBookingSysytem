@@ -17,10 +17,10 @@ public class Driver {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private long driverId;
+    private long Id;
     private long latitude;
     private long longitude;
-    private String cabName;
+    private String driverName;
     private double rating;
     private String phoneNUmber;
 }

@@ -3,21 +3,17 @@ package com.akhil.cabBookingSystem.controller;
 import com.akhil.cabBookingSystem.entity.Customer;
 import com.akhil.cabBookingSystem.entity.User;
 import com.akhil.cabBookingSystem.exception.RoleMisMatchException;
-import com.akhil.cabBookingSystem.exception.UserNotFoundException;
+
 import com.akhil.cabBookingSystem.service.CustomerService;
 import com.akhil.cabBookingSystem.service.UserService;
 import com.akhil.cabBookingSystem.util.JwtUtil;
-import com.sun.org.apache.xpath.internal.operations.Bool;
-import lombok.SneakyThrows;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.Map;
 
-import static sun.net.InetAddressCachePolicy.get;
+
 
 @RestController
 public class CustomerContoller {
@@ -92,4 +88,16 @@ public class CustomerContoller {
         System.out.println("sdada");
         customerService.cancelRide(customerId);
     }
+
+    @PostMapping("/getRideDetails")
+    public Map<String,Object> getRideDetails(@RequestBody Map<String,Object> payload) throws Exception {
+        String username = jwtTokenUtil.extractUsername((String) payload.get("jwt"));
+        User user =  userService.fetchByUsername(username);
+        if("customer".equalsIgnoreCase(user.getRole())){
+            throw new RoleMisMatchException("Not Valid Operation");
+        }
+        long  customerId = user.getRoleId();
+        return customerService.getRideDetails(customerId);
+    }
+
 }
